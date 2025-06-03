@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordMetrics: AI Content Optimizer - Free Word & Character Counter with Keyword Density Analysis</title>
+    <meta name="description" content="Free online tool to count words, characters, and analyze keyword density for SEO and content quality. Optimize your writing with WordMetrics.">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <style>
+        /* CSS for simple, clean, and responsive design */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1.1em;
+            resize: vertical;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+        .results {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            gap: 15px;
+        }
+        .result-box {
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 6px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .result-box strong {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            color: #2980b9;
+        }
+        .result-box span {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .ai-analysis {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+        }
+        .ai-analysis h3 {
+            color: #2e7d32;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .ai-analysis p {
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+        .keyword-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .keyword-list li {
+            background-color: #d1ecf1;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            color: #0c5460;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9em;
+        }
+        @media (max-width: 600px) {
+            .results {
+                flex-direction: column;
+                align-items: center;
+            }
+            .result-box {
+                width: 100%;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WordMetrics: AI Content Optimizer</h1>
+        <p style="text-align: center; font-size: 1.1em; color: #555;">Effortlessly count words & characters, and get AI-powered insights for better content.</p>
+        <textarea id="textInput" placeholder="Paste your text here to get started..."></textarea>
+
+        <div class="results">
+            <div class="result-box">
+                <strong>Words</strong>
+                <span id="wordCount">0</span>
+            </div>
+            <div class="result-box">
+                <strong>Characters (with spaces)</strong>
+                <span id="charCount">0</span>
+            </div>
+            <div class="result-box">
+                <strong>Characters (no spaces)</strong>
+                <span id="charCountNoSpaces">0</span>
+            </div>
+            <div class="result-box">
+                <strong>Paragraphs</strong>
+                <span id="paragraphCount">0</span>
+            </div>
+        </div>
+
+        <div class="ai-analysis">
+            <h3>AI-Powered Content Insights</h3>
+            <p><strong>Content Quality Score:</strong> <span id="qualityScore">N/A</span> / 100</p>
+            <p><strong>Top Keywords & Density:</strong></p>
+            <ul id="keywordDensityList" class="keyword-list">
+                </ul>
+            <p id="feedbackMessage" style="font-style: italic; color: #4CAF50;">Start typing or pasting your text to get instant insights!</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 WordMetrics. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const textInput = document.getElementById('textInput');
+        const wordCountSpan = document.getElementById('wordCount');
+        const charCountSpan = document.getElementById('charCount');
+        const charCountNoSpacesSpan = document.getElementById('charCountNoSpaces');
+        const paragraphCountSpan = document.getElementById('paragraphCount');
+        const qualityScoreSpan = document.getElementById('qualityScore');
+        const keywordDensityList = document.getElementById('keywordDensityList');
+        const feedbackMessage = document.getElementById('feedbackMessage');
+
+        // Function to save text to Local Storage
+        function saveTextToLocalStorage(text) {
+            try {
+                localStorage.setItem('wordmetrics_text_content', text);
+            } catch (e) {
+                console.warn('Local storage save failed:', e);
+            }
+        }
+
+        // Function to load text from Local Storage
+        function loadTextFromLocalStorage() {
+            try {
+                return localStorage.getItem('wordmetrics_text_content') || '';
+            } catch (e) {
+                console.warn('Local storage load failed:', e);
+                return '';
+            }
+        }
+
+        // AI analysis placeholder (simplified for client-side JS)
+        function analyzeText(text) {
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+            const charsNoSpaces = text.replace(/\s/g, '').length;
+            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length;
+
+            // Simplified quality score calculation (purely illustrative)
+            let qualityScore = 0;
+            if (words.length > 50) qualityScore += 20; // Enough content
+            if (text.length > 200) qualityScore += 10; // More depth
+            if (words.length > 0 && charsNoSpaces / words.length > 3) qualityScore += 15; // Average word length indicates complexity
+            // Add more heuristic rules for quality score, e.g., checking for very short sentences, etc.
+            qualityScore = Math.min(100, qualityScore); // Cap at 100
+
+            // Simple keyword density (top 5 unique words, excluding common ones)
+            const wordFrequency = {};
+            const stopWords = new Set(["the", "a", "an", "and", "or", "but", "is", "are", "was", "were", "be", "to", "of", "in", "on", "at", "for", "with", "as", "by", "from"]); // Example stop words
+            words.forEach(word => {
+                const lowerCaseWord = word.toLowerCase().replace(/[^a-z0-9]/g, ''); // Clean word
+                if (lowerCaseWord.length > 2 && !stopWords.has(lowerCaseWord)) {
+                    wordFrequency[lowerCaseWord] = (wordFrequency[lowerCaseWord] || 0) + 1;
+                }
+            });
+
+            const sortedKeywords = Object.entries(wordFrequency)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 5); // Get top 5
+
+            return {
+                wordCount: words.length,
+                charCount: text.length,
+                charCountNoSpaces: charsNoSpaces,
+                paragraphCount: paragraphs,
+                qualityScore: qualityScore,
+                topKeywords: sortedKeywords.map(([word, count]) => ({
+                    word: word,
+                    density: ((count / words.length) * 100).toFixed(2) + '%'
+                }))
+            };
+        }
+
+        function updateCounts() {
+            const text = textInput.value;
+            saveTextToLocalStorage(text); // Save to local storage on each update
+
+            if (text.trim() === '') {
+                wordCountSpan.textContent = '0';
+                charCountSpan.textContent = '0';
+                charCountNoSpacesSpan.textContent = '0';
+                paragraphCountSpan.textContent = '0';
+                qualityScoreSpan.textContent = 'N/A';
+                keywordDensityList.innerHTML = '';
+                feedbackMessage.textContent = 'Start typing or pasting your text to get instant insights!';
+                return;
+            }
+
+            const analysis = analyzeText(text);
+
+            wordCountSpan.textContent = analysis.wordCount;
+            charCountSpan.textContent = analysis.charCount;
+            charCountNoSpacesSpan.textContent = analysis.charCountNoSpaces;
+            paragraphCountSpan.textContent = analysis.paragraphCount;
+            qualityScoreSpan.textContent = analysis.qualityScore;
+
+            keywordDensityList.innerHTML = '';
+            if (analysis.topKeywords.length > 0) {
+                analysis.topKeywords.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.word}: ${item.density}`;
+                    keywordDensityList.appendChild(li);
+                });
+                feedbackMessage.textContent = ''; // Clear feedback if analysis is present
+            } else {
+                feedbackMessage.textContent = 'Continue typing for keyword insights.';
+            }
+
+            // Provide simple feedback based on quality score (example)
+            if (analysis.qualityScore < 50 && analysis.wordCount > 10) {
+                feedbackMessage.textContent = 'Consider adding more unique content or expanding your ideas.';
+            } else if (analysis.qualityScore >= 50 && analysis.qualityScore < 80 && analysis.wordCount > 10) {
+                feedbackMessage.textContent = 'Good start! Can you elaborate more on key points?';
+            } else if (analysis.qualityScore >= 80 && analysis.wordCount > 10) {
+                feedbackMessage.textContent = 'Excellent content quality! Keep up the great work.';
+            }
+        }
+
+        // Initial load from local storage
+        document.addEventListener('DOMContentLoaded', () => {
+            textInput.value = loadTextFromLocalStorage();
+            updateCounts(); // Initial update based on loaded content
+        });
+
+        textInput.addEventListener('input', updateCounts);
+    </script>
+</body>
+</html>
